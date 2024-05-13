@@ -1,0 +1,30 @@
+name: Combined Security Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  security_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+
+      - name: Run KICS
+        run: |
+          docker run -t -v ${{ github.workspace }}:/path checkmarx/kics:latest scan -p /path -o /path/reports --report-formats json,html --output-name report
+        continue-on-error: true
+
+      - name: Upload KICS Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: kics-report
+          path: reports/
