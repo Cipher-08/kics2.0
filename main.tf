@@ -6,7 +6,7 @@ provider "aws" {
 
 resource "aws_s3_bucket" "insecure_bucket" {
   bucket = "vulnerable-bucket"
-  acl    = "public-read"                 # Publicly accessible S3 bucket
+  acl    = "private"
 
   logging {
     target_bucket = "logging-bucket"     # Non-existent logging bucket
